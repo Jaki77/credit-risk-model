@@ -1,0 +1,26 @@
+# Core Data Science
+pandas
+numpy
+scipy
+
+# Machine Learning
+scikit-learn
+xgboost
+lightgbm
+
+# Visualization
+matplotlib
+seaborn
+plotly
+
+# Development & Testing
+jupyter
+notebook
+pytest
+pytest-cov
+
+# Utilities
+python-dotenv
+pyyaml
+tqdm
+joblib

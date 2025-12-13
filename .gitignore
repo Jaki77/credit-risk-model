@@ -1,0 +1,28 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Data files
+data/
+*.csv
+*.parquet
+*.pkl
+*.pickle
+
+# Images and Plots
+plots/
+*.png
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
