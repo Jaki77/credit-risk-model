@@ -3,24 +3,49 @@ pandas
 numpy
 scipy
 
-# Machine Learning
-scikit-learn
-xgboost
-lightgbm
-
 # Visualization
 matplotlib
 seaborn
 plotly
 
-# Development & Testing
-jupyter
-notebook
+# Machine Learning
+scikit-learn
+xgboost
+lightgbm
+imbalanced-learn
+
+# Feature Engineering
+category-encoders
+xverse
+woe
+
+# MLOps & Tracking
+mlflow
+wandb
+
+# API & Deployment
+fastapi
+uvicorn
+pydantic
+pydantic-settings
+
+# Database & Storage
+sqlalchemy
+psycopg2-binary
+
+# Testing & Quality
 pytest
 pytest-cov
+black
+flake8
+mypy
+pre-commit
 
 # Utilities
 python-dotenv
-pyyaml
-tqdm
 joblib
+tqdm
+jupyter
+
+# Containerization
+docker
