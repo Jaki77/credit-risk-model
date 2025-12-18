@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # MLflow Tracking Server
+  mlflow:
+    image: python:3.9-slim
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow:/mlflow
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+    command: >
+      sh -c "pip install mlflow boto3 &&
+             mlflow server --backend-store-uri /mlflow \
+                          --default-artifact-root s3://mlflow-artifacts \
+                          --host 0.0.0.0"
+    depends_on:
+      - minio
+    networks:
+      - ml-network
+
+  # MinIO for artifact storage
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - ./minio:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - ml-network
+
+  # Credit Risk API
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+    environment:
+      - MODEL_PATH=/app/models/best_model.joblib
+      - PROCESSOR_PATH=/app/data/processed/processor.joblib
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      - mlflow
+    networks:
+      - ml-network
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # PostgreSQL for model metadata
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=mlflow
+      - POSTGRES_PASSWORD=mlflow
+      - POSTGRES_DB=mlflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - ml-network
+
+networks:
+  ml-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mlflow:
+  minio:
