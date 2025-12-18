@@ -26,3 +26,12 @@ plots/
 
 # Logs
 *.log
+
+# MLflow runs
+mlruns/
+
+# Model artifacts
+models/
+
+# Database files
+*.db
