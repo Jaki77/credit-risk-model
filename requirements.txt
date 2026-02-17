@@ -38,6 +38,7 @@ streamlit
 
 # Explainability 
 shap
+lime
 
 # Testing & Quality
 pytest
