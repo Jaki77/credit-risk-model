@@ -33,6 +33,12 @@ pydantic-settings
 sqlalchemy
 psycopg2-binary
 
+# Dashboard 
+streamlit
+
+# Explainability 
+shap
+
 # Testing & Quality
 pytest
 pytest-cov

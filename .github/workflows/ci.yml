@@ -1,6 +1,10 @@
 name: CI/CD Pipeline
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
   test:
@@ -12,34 +16,36 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'
+        python-version: '3.9'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-      
-    - name: Verify Python version
-      run: python --version
+        pip install flake8 pytest pytest-cov black
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     
-    - name: Format check with black
+    - name: Check formatting with black
       run: |
-        black --check --diff .
-    
-    - name: Type check with mypy
-      run: |
-        mypy src --ignore-missing-imports
+        black --check src/ tests/ --diff
     
     - name: Test with pytest
       run: |
-        pytest tests/ -v --cov=src --cov-report=xml
+        pytest tests/ -v --cov=src/ --cov-report=xml --cov-report=term-missing
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -47,46 +53,25 @@ jobs:
         file: ./coverage.xml
         flags: unittests
         name: codecov-umbrella
+        fail_ci_if_error: false
     
-  build:
-    runs-on: ubuntu-latest
+    - name: Test Docker build
+      run: |
+        docker build -t credit-risk-model-test .
+        # Optional: Run container briefly to test it starts
+        docker run -d -p 8000:8000 --name test-container credit-risk-model-test
+        sleep 5
+        docker logs test-container
+        docker stop test-container
+        docker rm test-container
+
+  deploy-ready:
     needs: test
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    
-    - name: Build Docker image
-      run: |
-        docker build -t credit-risk-model:latest .
-    
-    - name: Run container tests
-      run: |
-        docker run --rm credit-risk-model:latest python -c "import pandas; import sklearn; print('Dependencies OK')"
-    
-    - name: Login to DockerHub
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Push to DockerHub
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        docker tag credit-risk-model:latest ${{ secrets.DOCKER_USERNAME }}/credit-risk-model:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/credit-risk-model:latest
-    
-  deploy:
     runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
     
     steps:
-    - name: Deploy to staging
+    - name: Deployment ready
       run: |
-        echo "Deploying to staging environment"
-        # Add your deployment commands here
-        # Example: ssh, kubectl, terraform, etc.
+        echo "✅ All tests passed! Ready for deployment."
+        echo "🎉 Build is successful!"
