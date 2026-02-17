@@ -35,6 +35,9 @@ from src.dashboard.components import (
     render_business_impact
 )
 
+from src.dashboard.shap_integration import render_shap_dashboard_tab
+from src.explainability.shap_explainer import CreditRiskExplainer
+
 # Page configuration
 st.set_page_config(
     page_title="Credit Risk Model Dashboard",
@@ -128,13 +131,26 @@ def main():
     
     # Sidebar
     render_sidebar()
-    
+
+    # After loading model and data
+    try:
+        explainer = CreditRiskExplainer(
+            model_path="models/best_model.pkl",
+            feature_names_path="models/feature_names.json"
+        )
+        explainer.prepare_background_data(df_customers[feature_names].head(100))
+        st.sidebar.success("✅ SHAP explainer ready")
+    except Exception as e:
+        explainer = None
+        st.sidebar.warning(f"⚠️ SHAP explainer not available: {str(e)}")
+
     # Main content - Tabs for different sections
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📊 Overview & KPIs", 
         "👥 RFM Customer Analysis", 
         "🤖 Model Performance",
         "🔮 Risk Prediction",
+        "🔍 Model Explainability",  # New SHAP tab
         "💼 Business Impact"
     ])
     
@@ -222,6 +238,13 @@ def main():
         render_prediction_interface(model, feature_names, api_url if model_available else None)
     
     with tab5:
+        if explainer is not None:
+            render_shap_dashboard_tab(explainer, df_customers[feature_names].head(200))
+        else:
+            st.error("SHAP explainer not available. Please train a model first.")
+            st.info("Run the model training script to generate a model for explanations.")
+
+    with tab6:
         render_business_impact(
             st.session_state.predictions_made,
             st.session_state.approved_loans,
