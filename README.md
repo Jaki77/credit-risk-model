@@ -1,5 +1,9 @@
 # Credit Risk Probability Model for Alternative Data
 
+[![CI/CD Pipeline](https://github.com/Jaki77/credit-risk-model/actions/workflows/ci.yml/badge.svg)](https://github.com/Jaki77/credit-risk-model/actions/workflows/ci.yml)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Project Overview
 
 This project implements an end-to-end credit risk probability model for **Bati Bank**'s new "buy-now-pay-later" service in partnership with an e-commerce platform. The model uses alternative data (transaction history) to predict creditworthiness, creating a proxy target variable through RFM (Recency, Frequency, Monetary) analysis and K-Means clustering.
