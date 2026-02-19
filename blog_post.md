@@ -2,13 +2,7 @@
 
 ## How I transformed e-commerce transaction data into a Basel II-compliant credit scoring system
 
-*By [Your Name] | February 17, 2026*
-
----
-
-![Credit Risk Model Header](docs/images/blog_header.png)
-
----
+*By Yakin Samuel | February 17, 2026*
 
 ## 📝 Introduction
 
@@ -40,10 +34,10 @@ Bati Bank, with over 10 years of traditional banking experience, partnered with 
 ### The Credit Risk Dilemma
 
 Traditional credit scoring relies on historical loan repayment data. But for this new service:
-❌ No credit bureau scores for most customers
-❌ No prior loan history with the bank
-❌ No established repayment behavior
-✅ Rich e-commerce transaction data available
+- ❌ No credit bureau scores for most customers
+- ❌ No prior loan history with the bank
+- ❌ No established repayment behavior
+- ✅ Rich e-commerce transaction data available
 
 
 **The question became:** Can we predict creditworthiness from shopping behavior alone?
@@ -184,11 +178,11 @@ Coverage: 87% (exceeding 80% target)
 
 **GitHub Actions CI/CD pipeline** automates:
 
-✅ Linting with flake8
-✅ Code formatting with black
-✅ Unit tests with pytest
-✅ Coverage reporting
-✅ Docker build verification
+- ✅ Linting with flake8
+- ✅ Code formatting with black
+- ✅ Unit tests with pytest
+- ✅ Coverage reporting
+- ✅ Docker build verification
 
 ### API with FastAPI
 The model is served via a REST API:
@@ -213,22 +207,14 @@ async def predict(customer_data: CustomerData):
 To make the model accessible to business stakeholders, I built a Streamlit dashboard with 6 tabs:
 
 **1. Overview & KPIs**
-https://docs/images/dashboard_overview.png
-
-Key metrics: total customers, high-risk percentage, transaction volume
-
-Risk distribution pie chart
-
-Transaction trends over time
+- Key metrics: total customers, high-risk percentage, transaction volume
+- Risk distribution pie chart
+-Transaction trends over time
 
 **2. RFM Customer Analysis**
-https://docs/images/rfm_analysis.png
-
-3D scatter plot of customer segments
-
-Pairwise relationship visualizations
-
-Segment characteristics table
+- 3D scatter plot of customer segments
+- Pairwise relationship visualizations
+- Segment characteristics table
 
 **3. Model Performance**
 - ROC curve with AUC
@@ -315,18 +301,18 @@ improvement = (profit_with - profit_without) / profit_without * 100
 
 ### What I'd Do Differently
 With more time, I would:
-1. Add A/B testing framework for model comparisons
-2. Implement real-time streaming with Kafka
-3. Build a mobile app for loan officers
-4. Add more fairness testing for protected groups
-5. Create automated retraining pipeline
+1. **Add A/B testing framework** for model comparisons
+2. **Implement real-time streaming** with Kafka
+3. **Build a mobile app** for loan officers
+4. **Add more fairness testing** for protected groups
+5. **Create automated retraining pipeline**
 
 ## 🔗 Resources
-- GitHub Repository: github.com/Jaki77/credit-risk-mode
+- GitHub Repository: [GitHub](https://github.com/Jaki77/credit-risk-model)
 
 References
-[Basel II Capital Accord](https://www.bis.org/publ/bcbsca.htm)
-[SHAP Documentation](https://shap.readthedocs.io/)
-[Streamlit Documentation](https://docs.streamlit.io/)
-[MLflow Documentation](https://mlflow.org/docs/)
+- [Basel II Capital Accord](https://www.bis.org/publ/bcbsca.htm)
+- [SHAP Documentation](https://shap.readthedocs.io/)
+- [Streamlit Documentation](https://docs.streamlit.io/)
+- [MLflow Documentation](https://mlflow.org/docs/)
 
